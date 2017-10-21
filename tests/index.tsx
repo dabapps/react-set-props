@@ -78,6 +78,37 @@ describe('Set Props', () => {
       expect(tree).toMatchSnapshot();
     });
 
+    it('should be able to set props in the store', () => {
+      const testStore = createStore(combineReducers({props: propsReducer}));
+
+      expect(testStore.getState()).toEqual({
+        props: {
+          secretKey: 'SET_PROPS_SECRET_KEY'
+        }
+      });
+
+      expect(Object.keys((testStore.getState() as any).props).length).toEqual(1);
+
+      const wrapper = mount(
+        <Provider store={testStore}>
+          <SetPropsCounter buttonText="Increment" />
+        </Provider>
+      );
+
+      const propKeys = Object.keys((testStore.getState() as any).props);
+      const componentId = propKeys.filter((key) => key !== 'secretKey')[0];
+
+      expect(propKeys.length).toEqual(2);
+
+      let props = (testStore.getState() as any).props[componentId];
+      expect(props).toEqual({count: 0});
+
+      wrapper.find('button').first().simulate('click');
+
+      props = (testStore.getState() as any).props[componentId];
+      expect(props).toEqual({count: 1});
+    });
+
     it('should clear its props on unmount', () => {
       const testStore = createStore(combineReducers({props: propsReducer}));
 

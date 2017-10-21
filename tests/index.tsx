@@ -136,7 +136,10 @@ describe('Set Props', () => {
         }
       });
 
-      expect(Object.keys((testStore.getState() as any).props).length).toEqual(1);
+      const props = (testStore.getState() as any).props;
+
+      expect(Object.keys(props).length).toEqual(1);
+      expect(props).toEqual({secretKey: 'SET_PROPS_SECRET_KEY'});
     });
 
     it('should error if the props reducer is not present', () => {

@@ -34,7 +34,7 @@ interface SetPropsParentProps<Props> {
 
 export interface StoreProps {
   props: StringKeyedObject & {
-    secretKey: typeof SET_PROPS_SECRET_KEY;
+    secretKey: string;
   };
 }
 

@@ -28,7 +28,7 @@ export interface SetPropsAction {
   payload: Payload;
 }
 
-interface ISetPropsParentProps<Props> {
+interface SetPropsParentProps<Props> {
   id: string;
   setProps(props: Partial<Props>): void;
 }
@@ -102,15 +102,14 @@ export function withSetProps<
   Props extends StringKeyedObject,
   ExternalProps extends StringKeyedObject = {}
 >(getInitialProps: (props: ExternalProps) => Props) {
+  const id = uuid();
+
   const unconnected = connect(
     (
       state: StoreProps,
-      parentProps: StringKeyedObject & ISetPropsParentProps<Props>
+      parentProps: StringKeyedObject & SetPropsParentProps<Props>
     ): Props & ExternalProps => {
       const props = state[STORE_KEY];
-
-      // Due to a generics issue TypeScript doesn't think props is an object here so we have to cast
-      const { id, ...externalProps } = parentProps;
 
       if (!props || props.secretKey !== SET_PROPS_SECRET_KEY) {
         throw new Error(
@@ -118,11 +117,11 @@ export function withSetProps<
         );
       }
 
-      const storeProps = props[parentProps.id];
+      const storeProps = props[id];
 
       return {
         ...storeProps,
-        ...externalProps,
+        ...parentProps
       };
     }
   );
@@ -140,14 +139,10 @@ export function withSetProps<
         StringKeyedObject & InternalSetPropsProps<Props>,
         Props
       > {
-        private id: string;
-
         public constructor(
           inputProps: ExternalProps & InternalSetPropsProps<Props>
         ) {
           super(inputProps);
-
-          this.id = uuid();
 
           this.boundSetProps = this.boundSetProps.bind(this);
         }
@@ -157,13 +152,13 @@ export function withSetProps<
 
           // TODO: Remove casts when TS support destructing extended types
           this.props.setProps(
-            this.id,
+            id,
             getInitialProps(externalProps as Readonly<ExternalProps>)
           );
         }
 
         public componentWillUnmount() {
-          this.props.clearProps(this.id);
+          this.props.clearProps(id);
         }
 
         public render() {
@@ -173,14 +168,13 @@ export function withSetProps<
           return (
             <Connected
               {...remainingProps as Readonly<ExternalProps>}
-              id={this.id}
               setProps={this.boundSetProps}
             />
           );
         }
 
         private boundSetProps(props: Partial<Props>) {
-          this.props.setProps(this.id, props);
+          this.props.setProps(id, props);
         }
       }
     );

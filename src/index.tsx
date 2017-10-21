@@ -105,8 +105,8 @@ export function withSetProps<
 
   const unconnected = connect(
     (
-      state: StoreProps,
-      parentProps: StringKeyedObject & SetPropsParentProps<Props>
+      state: Readomly<StoreProps>,
+      parentProps: Readonly<StringKeyedObject & SetPropsParentProps<Props>>
     ): Props & ExternalProps => {
       const props = state[STORE_KEY];
 

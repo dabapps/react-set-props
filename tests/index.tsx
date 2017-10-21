@@ -13,8 +13,6 @@ import {
 
 describe('Set Props', () => {
 
-  const storeWithInvalidPropsReducer = createStore(combineReducers({propsReducer}));
-
   interface ExternalProps {
     buttonText: string;
   }
@@ -143,6 +141,8 @@ describe('Set Props', () => {
     });
 
     it('should error if the props reducer is not present', () => {
+      const storeWithInvalidPropsReducer = createStore(combineReducers({propsReducer}));
+
       const invalidReducer = () => mount(
         <Provider store={storeWithInvalidPropsReducer}>
           <SetPropsCounter buttonText="Increment" />

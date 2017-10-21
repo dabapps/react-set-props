@@ -79,6 +79,17 @@ describe('Set Props', () => {
         }
       });
 
+      state = propsReducer(state, setPropsAction('id2', {foo: 'bar'}));
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY',
+        id: {
+          foo: 'bar'
+        },
+        id2: {
+          foo: 'bar'
+        }
+      });
     });
 
     it('should SET_PROPS over existing props', () => {
@@ -89,12 +100,24 @@ describe('Set Props', () => {
         id: {
           foo: undefined,
           baz: 'foo'
+        },
+        id2: {
+          foo: 'bar'
         }
       });
     });
 
     it('should handle CLEAR_PROPS action', () => {
       state = propsReducer(state, clearPropsAction('id'));
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY',
+        id2: {
+          foo: 'bar'
+        }
+      });
+
+      state = propsReducer(state, clearPropsAction('id2'));
 
       expect(state).toEqual({
         secretKey: 'SET_PROPS_SECRET_KEY'

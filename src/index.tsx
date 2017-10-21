@@ -34,7 +34,7 @@ interface SetPropsParentProps<Props> {
 
 export interface StoreProps {
   props: StringKeyedObject & {
-    secretKey: string;
+    __secretKey: string;
   };
 }
 
@@ -68,7 +68,7 @@ export function clearPropsAction(id: string) {
 }
 
 export function propsReducer(
-  state: StoreProps[typeof STORE_KEY] | undefined = { secretKey: SET_PROPS_SECRET_KEY },
+  state: StoreProps[typeof STORE_KEY] | undefined = { __secretKey: SET_PROPS_SECRET_KEY },
   action: SetPropsAction | ActionAny
 ): StoreProps[typeof STORE_KEY] {
   switch (action.type) {
@@ -81,7 +81,7 @@ export function propsReducer(
           ...previous,
           ...(action as SetPropsAction).payload.props,
         },
-        secretKey: SET_PROPS_SECRET_KEY
+        __secretKey: SET_PROPS_SECRET_KEY
       };
     case CLEAR_PROPS:
       const clearedState = {...state};
@@ -90,7 +90,7 @@ export function propsReducer(
 
       return {
         ...clearedState,
-        secretKey: SET_PROPS_SECRET_KEY
+        __secretKey: SET_PROPS_SECRET_KEY
       };
     default:
       return state;
@@ -110,7 +110,7 @@ export function withSetProps<
     ): Props & ExternalProps => {
       const props = state[STORE_KEY];
 
-      if (!props || props.secretKey !== SET_PROPS_SECRET_KEY) {
+      if (!props || props.__secretKey !== SET_PROPS_SECRET_KEY) {
         throw new Error(
           'No props reducer found in store. Note: must be called "props".'
         );

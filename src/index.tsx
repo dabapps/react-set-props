@@ -85,10 +85,12 @@ export function propsReducer(
         secretKey: SET_PROPS_SECRET_KEY
       };
     case CLEAR_PROPS:
-      const { [(action as SetPropsAction).payload.id]: cleared, ...rest } = state;
+      const clearedState = {...state};
+
+      delete clearedState[(action as SetPropsAction).payload.id];
 
       return {
-        ...rest,
+        ...clearedState,
         secretKey: SET_PROPS_SECRET_KEY
       };
     default:

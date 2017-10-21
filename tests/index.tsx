@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom/server';
 import { Provider } from 'react-redux';
 import * as renderer from 'react-test-renderer';
 import { combineReducers, createStore } from 'redux';
-import { propsReducer, SetPropsProps, withSetProps } from '../src/';
+import { clearPropsAction, propsReducer, setPropsAction, SetPropsProps, withSetProps } from '../src/';
 
 describe('Set Props', () => {
 
@@ -33,24 +33,74 @@ describe('Set Props', () => {
 
   const SetPropsCounter = withSetProps<Props, ExternalProps>(getInitialProps)(Counter);
 
-  it('should inject props from the store and accept external props', () => {
-    const tree = renderer.create(
-      <Provider store={store}>
-        <SetPropsCounter buttonText="Increment" />
-      </Provider>
-    );
+  describe('Connected Component', () => {
 
-    expect(tree).toMatchSnapshot();
+    it('should inject props from the store and accept external props', () => {
+      const tree = renderer.create(
+        <Provider store={store}>
+          <SetPropsCounter buttonText="Increment" />
+        </Provider>
+      );
+
+      expect(tree).toMatchSnapshot();
+    });
+
+    it('should error if the props reducer is not present', () => {
+      const invalidReducer = () => ReactDOM.renderToStaticMarkup(
+        <Provider store={storeWithInvalidPropsReducer}>
+          <SetPropsCounter buttonText="Increment" />
+        </Provider>
+      );
+
+      expect(invalidReducer).toThrow();
+    });
+
   });
 
-  it('should error if the props reducer is not present', () => {
-    const invalidReducer = () => ReactDOM.renderToStaticMarkup(
-      <Provider store={storeWithInvalidPropsReducer}>
-        <SetPropsCounter buttonText="Increment" />
-      </Provider>
-    );
+  describe('Props Reducer', () => {
 
-    expect(invalidReducer).toThrow();
+    let state: {[index: string]: any, secretKey: 'SET_PROPS_SECRET_KEY'};
+
+    it('should have a default state', () => {
+      state = propsReducer(undefined, {type: 'Unknown'});
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY'
+      });
+    });
+
+    it('should handle SET_PROPS action', () => {
+      state = propsReducer(state, setPropsAction('id', {foo: 'bar'}));
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY',
+        id: {
+          foo: 'bar'
+        }
+      });
+
+    });
+
+    it('should SET_PROPS over existing props', () => {
+      state = propsReducer(state, setPropsAction('id', {foo: undefined, baz: 'foo'}));
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY',
+        id: {
+          foo: undefined,
+          baz: 'foo'
+        }
+      });
+    });
+
+    it('should handle CLEAR_PROPS action', () => {
+      state = propsReducer(state, clearPropsAction('id'));
+
+      expect(state).toEqual({
+        secretKey: 'SET_PROPS_SECRET_KEY'
+      });
+    });
+
   });
 
 });

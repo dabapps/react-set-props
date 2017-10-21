@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Set Props should inject props from the store and accept external props 1`] = `
+exports[`Set Props Connected Component should inject props from the store and accept external props 1`] = `
 <p>
   Count: 
   0

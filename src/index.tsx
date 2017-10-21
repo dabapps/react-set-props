@@ -18,6 +18,11 @@ export interface Payload {
   props?: StringKeyedObject;
 }
 
+export interface ActionAny {
+  type: string;
+  [index: string]: any;
+}
+
 export interface SetPropsAction {
   type: string;
   payload: Payload;
@@ -29,8 +34,8 @@ interface ISetPropsParentProps<Props> {
 }
 
 export interface StoreProps {
-  props?: StringKeyedObject & {
-    secretKey: string;
+  props: StringKeyedObject & {
+    secretKey: typeof SET_PROPS_SECRET_KEY;
   };
 }
 
@@ -44,7 +49,7 @@ export type SetPropsProps<Props> = {
   dispatch(): Dispatch<any>;
 } & Props;
 
-function setProps<Props>(id: string, props: Partial<Props>) {
+export function setPropsAction<Props>(id: string, props: Partial<Props>) {
   return {
     type: SET_PROPS,
     payload: {
@@ -54,33 +59,37 @@ function setProps<Props>(id: string, props: Partial<Props>) {
   };
 }
 
-function clearProps(id: string) {
+export function clearPropsAction(id: string) {
   return {
     type: CLEAR_PROPS,
-    payload: id,
+    payload: {
+      id
+    },
   };
 }
 
 export function propsReducer(
-  state: StoreProps[typeof STORE_KEY] = { secretKey: SET_PROPS_SECRET_KEY },
-  action: SetPropsAction
+  state: StoreProps[typeof STORE_KEY] | undefined = { secretKey: SET_PROPS_SECRET_KEY },
+  action: SetPropsAction | ActionAny
 ): StoreProps[typeof STORE_KEY] {
   switch (action.type) {
     case SET_PROPS:
-      const previous = state[action.payload.id];
+      const previous = state[(action as SetPropsAction).payload.id];
 
       return {
         ...state,
-        [action.payload.id]: {
+        [(action as SetPropsAction).payload.id]: {
           ...previous,
-          ...action.payload.props,
+          ...(action as SetPropsAction).payload.props,
         },
+        secretKey: SET_PROPS_SECRET_KEY
       };
     case CLEAR_PROPS:
-      const { [action.payload.id]: cleared, ...rest } = state;
+      const { [(action as SetPropsAction).payload.id]: cleared, ...rest } = state;
 
       return {
         ...rest,
+        secretKey: SET_PROPS_SECRET_KEY
       };
     default:
       return state;
@@ -123,7 +132,7 @@ export function withSetProps<
       (state: {}, props: ExternalProps) => {
         return props;
       },
-      { setProps, clearProps }
+      { setProps: setPropsAction, clearProps: clearPropsAction }
     )(
       class SetPropsWrapper extends React.PureComponent<
         StringKeyedObject & InternalSetPropsProps<Props>,

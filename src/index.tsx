@@ -29,7 +29,6 @@ export interface SetPropsAction {
 }
 
 interface SetPropsParentProps<Props> {
-  id: string;
   setProps(props: Partial<Props>): void;
 }
 

@@ -149,7 +149,7 @@ export function withSetProps<
         public componentWillMount() {
           const { setProps, clearProps, ...externalProps } = this.props;
 
-          // TODO: Remove casts when TS support destructing extended types
+          // TODO: Remove casts when TS supports destructing extended types
           this.props.setProps(
             id,
             getInitialProps(externalProps as Readonly<ExternalProps>)
@@ -163,7 +163,7 @@ export function withSetProps<
         public render() {
           const { setProps, clearProps, ...remainingProps } = this.props;
 
-          // TODO: Remove casts when TS support destructing extended types
+          // TODO: Remove casts when TS supports destructing extended types
           return (
             <Connected
               {...remainingProps as Readonly<ExternalProps>}

@@ -13,10 +13,6 @@ export interface StringKeyedObject {
   [index: string]: any;
 }
 
-export interface ActionAny extends StringKeyedObject {
-  type: string;
-}
-
 export interface SetPropsPayload {
   id: string;
   props?: StringKeyedObject;

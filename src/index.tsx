@@ -42,10 +42,12 @@ interface InternalSetPropsProps<Props> {
   clearProps(id: string): void;
 }
 
-export type SetPropsProps<Props> = {
+export interface SetPropsDispatchProps<Props> {
   setProps(props: Partial<Props>): void;
   dispatch(): Dispatch<any>;
-} & Props;
+}
+
+export type SetPropsProps<Props> = SetPropsDispatchProps<Props> & Props;
 
 export function setPropsAction<Props>(id: string, props: Partial<Props>) {
   return {
@@ -104,8 +106,8 @@ export function withSetProps<
 
   const unconnected = connect(
     (
-      state: Readonly<StoreProps>,
-      parentProps: Readonly<StringKeyedObject & SetPropsParentProps<Props>>
+      state,
+      parentProps: Readonly<ExternalProps & SetPropsParentProps<Props>>
     ): Props & ExternalProps => {
       const props = state[STORE_KEY];
 
@@ -119,7 +121,8 @@ export function withSetProps<
 
       return {
         ...storeProps,
-        ...parentProps
+        // TODO: Remove casts when TS supports destructing extended types
+        ...parentProps as any
       };
     }
   );
@@ -127,14 +130,14 @@ export function withSetProps<
   return (Component: Component<Props>): Component<ExternalProps> => {
     const Connected = unconnected(Component);
 
-    return connect<{}, InternalSetPropsProps<Props>, ExternalProps>(
-      (state: {}, props: ExternalProps) => {
+    return connect(
+      (state: {}, props: Readonly<ExternalProps>) => {
         return props;
       },
       { setProps: setPropsAction, clearProps: clearPropsAction }
     )(
       class SetPropsWrapper extends React.PureComponent<
-        StringKeyedObject & InternalSetPropsProps<Props>,
+        ExternalProps & InternalSetPropsProps<Props>,
         Props
       > {
         public constructor(
@@ -146,12 +149,12 @@ export function withSetProps<
         }
 
         public componentWillMount() {
-          const { setProps, clearProps, ...externalProps } = this.props;
-
           // TODO: Remove casts when TS supports destructing extended types
+          const { setProps, clearProps, ...externalProps } = this.props as any;
+
           this.props.setProps(
             id,
-            getInitialProps(externalProps as Readonly<ExternalProps>)
+            getInitialProps(externalProps)
           );
         }
 
@@ -160,12 +163,12 @@ export function withSetProps<
         }
 
         public render() {
-          const { setProps, clearProps, ...remainingProps } = this.props;
-
           // TODO: Remove casts when TS supports destructing extended types
+          const { setProps, clearProps, ...remainingProps } = this.props as any;
+
           return (
             <Connected
-              {...remainingProps as Readonly<ExternalProps>}
+              {...remainingProps}
               setProps={this.boundSetProps}
             />
           );

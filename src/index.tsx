@@ -68,24 +68,24 @@ export function clearPropsAction(id: string) {
 
 export function propsReducer(
   state: StoreProps[typeof STORE_KEY] | undefined = { __secretKey: SET_PROPS_SECRET_KEY },
-  action: SetPropsAction | ActionAny
+  action: SetPropsAction
 ): StoreProps[typeof STORE_KEY] {
   switch (action.type) {
     case SET_PROPS:
-      const previous = state[(action as SetPropsAction).payload.id];
+      const previous = state[action.payload.id];
 
       return {
         ...state,
-        [(action as SetPropsAction).payload.id]: {
+        [action.payload.id]: {
           ...previous,
-          ...(action as SetPropsAction).payload.props,
+          ...action.payload.props,
         },
         __secretKey: SET_PROPS_SECRET_KEY
       };
     case CLEAR_PROPS:
       const clearedState = {...state};
 
-      delete clearedState[(action as SetPropsAction).payload.id];
+      delete clearedState[action.payload.id];
 
       return {
         ...clearedState,

@@ -159,7 +159,7 @@ describe('Set Props', () => {
     let state: {[index: string]: any, __secretKey: string};
 
     it('should have a default state', () => {
-      state = propsReducer(undefined, {type: 'Unknown'});
+      state = propsReducer(undefined, {type: 'Unknown'} as any);
 
       expect(state).toEqual({
         __secretKey: 'SET_PROPS_SECRET_KEY'

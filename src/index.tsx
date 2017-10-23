@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 
-export const STORE_KEY = 'props';
+export const STORE_KEY = 'setPropsReducer';
 const SET_PROPS = 'SET_PROPS';
 const CLEAR_PROPS = 'CLEAR_PROPS';
 const SET_PROPS_SECRET_KEY = 'SET_PROPS_SECRET_KEY';
@@ -28,7 +28,7 @@ interface SetPropsParentProps<Props> {
 }
 
 export interface StoreProps {
-  props: StringKeyedObject & {
+  setPropsReducer: StringKeyedObject & {
     __secretKey: string;
   };
 }
@@ -43,7 +43,7 @@ export interface SetPropsDispatchProps<Props> {
   dispatch(): Dispatch<any>;
 }
 
-export type SetPropsProps<Props> = SetPropsDispatchProps<Props> & Props;
+export type SetPropsInterface<Props> = SetPropsDispatchProps<Props> & Props;
 
 export function setPropsAction<Props>(id: string, props: Partial<Props>) {
   return {
@@ -64,7 +64,7 @@ export function clearPropsAction(id: string) {
   };
 }
 
-export function propsReducer(
+export function setPropsReducer(
   state: StoreProps[typeof STORE_KEY] | undefined = { __secretKey: SET_PROPS_SECRET_KEY },
   action: SetPropsAction
 ): StoreProps[typeof STORE_KEY] {

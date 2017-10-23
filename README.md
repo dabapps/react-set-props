@@ -50,3 +50,36 @@ combineReducers({
   setPropsReducer
 });
 ```
+
+### Javascript
+
+#### Connecting your component
+
+```js
+import { withSetProps } from '@dabapps/react-set-props';
+
+const MyComponent = ({buttonText, count, setProps}) => (
+  <p>
+    Count: {count}
+    <button onClick={() => setProps({count: count + 1})}>
+      {buttonText}
+    </button>
+  </p>
+);
+
+const getInitialProps = (props) => ({
+  count: 0
+});
+
+export default withSetProps(getInitialProps)(MyComponent);
+```
+
+#### Props reducer
+
+```js
+import { setPropsReducer } from '@dabapps/react-set-props';
+
+combineReducers({
+  setPropsReducer
+});
+```

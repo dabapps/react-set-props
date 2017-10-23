@@ -1,5 +1,7 @@
 # react-set-props
 
+[![Build Status](https://travis-ci.org/dabapps/react-set-props.svg?branch=master)](https://travis-ci.org/dabapps/react-set-props)
+
 **Store arbitrary state in redux with a similar API to setState**
 
 ## Installation

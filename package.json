@@ -63,6 +63,9 @@
     "typescript": ">= 2.3.3",
     "uuid": ">= 3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "jest": {
     "coverageThreshold": {
       "global": {

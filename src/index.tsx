@@ -23,27 +23,31 @@ export interface SetPropsAction {
   payload: SetPropsPayload;
 }
 
-interface SetPropsParentProps<Props> {
+export interface DispatchProps {
+  dispatch(): Dispatch<any>;
+}
+
+export interface SetPropsChildInterface<Props> extends DispatchProps {
   setProps(props: Partial<Props>): void;
 }
 
-export interface StoreProps {
-  setPropsReducer: StringKeyedObject & {
+export interface SetPropsParentInterface<Props> extends SetPropsChildInterface<Props>, DispatchProps {
+  id: string;
+}
+
+export interface SetPropsStoreInterface {
+  setPropsReducer: {
     __secretKey: string;
+    [index: string]: {};
   };
 }
 
-interface InternalSetPropsProps<Props> {
+export interface InternalSetPropsInterface<Props> {
   setProps(id: string, props: Partial<Props>): void;
   clearProps(id: string): void;
 }
 
-export interface SetPropsDispatchProps<Props> {
-  setProps(props: Partial<Props>): void;
-  dispatch(): Dispatch<any>;
-}
-
-export type SetPropsInterface<Props> = SetPropsDispatchProps<Props> & Props;
+export type SetPropsInterface<Props> = SetPropsChildInterface<Props> & Props;
 
 export function setPropsAction<Props>(id: string, props: Partial<Props>) {
   return {
@@ -65,9 +69,9 @@ export function clearPropsAction(id: string) {
 }
 
 export function setPropsReducer(
-  state: StoreProps[typeof STORE_KEY] | undefined = { __secretKey: SET_PROPS_SECRET_KEY },
+  state: SetPropsStoreInterface[typeof STORE_KEY] | undefined = { __secretKey: SET_PROPS_SECRET_KEY },
   action: SetPropsAction
-): StoreProps[typeof STORE_KEY] {
+): SetPropsStoreInterface[typeof STORE_KEY] {
   switch (action.type) {
     case SET_PROPS:
       const previous = state[action.payload.id];
@@ -96,51 +100,52 @@ export function setPropsReducer(
 
 export function withSetProps<
   Props extends StringKeyedObject,
-  ExternalProps extends StringKeyedObject = {}
->(getInitialProps: (props: ExternalProps) => Props) {
-  const id = uuid();
+  ExternalProps extends StringKeyedObject = StringKeyedObject
+>(getInitialProps: (props: StringKeyedObject) => Props) {
 
-  const unconnected = connect(
-    (
-      state,
-      parentProps: Readonly<ExternalProps & SetPropsParentProps<Props>>
-    ): Props & ExternalProps => {
-      const props = state[STORE_KEY];
+  type UnconnectedReturn = SetPropsChildInterface<Props> & ExternalProps & Props;
+  type ParentProps = SetPropsParentInterface<Props> & ExternalProps;
 
-      if (!props || props.__secretKey !== SET_PROPS_SECRET_KEY) {
-        throw new Error(
-          'No props reducer found in store. Note: must be called "props".'
-        );
-      }
+  const unconnected = connect((state: SetPropsStoreInterface, parentProps: ParentProps): UnconnectedReturn => {
+    const props = state[STORE_KEY];
 
-      const storeProps = props[id];
+    // TODO: Remove casts when TS supports destructing extended types
+    const { id, ...remainingProps } = parentProps as any;
 
-      return {
-        ...storeProps,
-        // TODO: Remove casts when TS supports destructing extended types
-        ...parentProps as any
-      };
+    if (!props || props.__secretKey !== SET_PROPS_SECRET_KEY) {
+      throw new Error(
+        'No props reducer found in store. Note: must be called "props".'
+      );
     }
-  );
 
-  return (Component: Component<Props>): Component<ExternalProps> => {
+    const storeProps = props[id];
+
+    return {
+      ...storeProps,
+      ...remainingProps
+    };
+  });
+
+  return (Component: Component<SetPropsInterface<Props> & ExternalProps>) => {
     const Connected = unconnected(Component);
 
     return connect(
-      (state: {}, props: Readonly<ExternalProps>) => {
-        return props;
-      },
-      { setProps: setPropsAction, clearProps: clearPropsAction }
-    )(
-      class SetPropsWrapper extends React.PureComponent<
-        ExternalProps & InternalSetPropsProps<Props>,
-        Props
-      > {
+      (state, props: ExternalProps): ExternalProps => props,
+      {
+        setProps: setPropsAction,
+        clearProps: clearPropsAction
+      }
+    )
+    (
+      class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & ExternalProps, void> {
+        private id: string;
+
         public constructor(
-          inputProps: ExternalProps & InternalSetPropsProps<Props>
+          inputProps: InternalSetPropsInterface<Props> & ExternalProps
         ) {
           super(inputProps);
 
+          this.id = uuid();
           this.boundSetProps = this.boundSetProps.bind(this);
         }
 
@@ -149,13 +154,13 @@ export function withSetProps<
           const { setProps, clearProps, ...externalProps } = this.props as any;
 
           this.props.setProps(
-            id,
+            this.id,
             getInitialProps(externalProps)
           );
         }
 
         public componentWillUnmount() {
-          this.props.clearProps(id);
+          this.props.clearProps(this.id);
         }
 
         public render() {
@@ -165,13 +170,14 @@ export function withSetProps<
           return (
             <Connected
               {...remainingProps}
+              id={this.id}
               setProps={this.boundSetProps}
             />
           );
         }
 
         private boundSetProps(props: Partial<Props>) {
-          this.props.setProps(id, props);
+          this.props.setProps(this.id, props);
         }
       }
     );

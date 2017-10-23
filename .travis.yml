@@ -1,0 +1,7 @@
+language: node_js
+
+deploy:
+  provider: npm
+  email: "npm@dabapps.com"
+  on:
+    tags: true

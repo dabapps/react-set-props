@@ -35,8 +35,8 @@ export interface SetPropsStoreInterface {
 }
 
 interface InternalSetPropsInterface<Props> {
-  setProps(id: string, props: Partial<Props>): void;
-  clearProps(id: string): void;
+  __setProps(id: string, props: Partial<Props>): void;
+  __clearProps(id: string): void;
 }
 
 export type SetPropsInterface<Props> = {
@@ -120,13 +120,13 @@ export function withSetProps<
     return connect(
       (state, props: ExternalProps): ExternalProps => props,
       {
-        setProps: setPropsAction,
-        clearProps: clearPropsAction
+        __setProps: setPropsAction,
+        __clearProps: clearPropsAction
       }
     )
     (
       class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & ExternalProps, void> {
-        private id: string;
+        private __id: string; // tslint:disable-line:variable-name
         private Connected: Component<SetPropsInterface<Props>>;
 
         public constructor(
@@ -134,29 +134,29 @@ export function withSetProps<
         ) {
           super(inputProps);
 
-          this.id = uuid();
-          this.Connected = unconnected(this.id)(Component);
+          this.__id = uuid();
+          this.Connected = unconnected(this.__id)(Component);
           this.boundSetProps = this.boundSetProps.bind(this);
         }
 
         public componentWillMount() {
           // TODO: Remove casts when TS supports destructing extended types
-          const { setProps, clearProps, ...externalProps } = this.props as any;
+          const { __setProps, __clearProps, ...externalProps } = this.props as any;
 
-          this.props.setProps(
-            this.id,
+          this.props.__setProps(
+            this.__id,
             getInitialProps(externalProps)
           );
         }
 
         public componentWillUnmount() {
-          this.props.clearProps(this.id);
+          this.props.__clearProps(this.__id);
         }
 
         public render() {
           const { Connected } = this;
           // TODO: Remove casts when TS supports destructing extended types
-          const { setProps, clearProps, ...remainingProps } = this.props as any;
+          const { __setProps, __clearProps, ...remainingProps } = this.props as any;
 
           return (
             <Connected
@@ -167,7 +167,7 @@ export function withSetProps<
         }
 
         private boundSetProps(props: Partial<Props>) {
-          this.props.setProps(this.id, props);
+          this.props.__setProps(this.__id, props);
         }
       }
     );

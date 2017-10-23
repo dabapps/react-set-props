@@ -57,7 +57,7 @@ describe('Set Props', () => {
       expect(typeof props.dispatch).toEqual('function');
       expect(typeof props.setProps).toEqual('function');
       expect(typeof (props as any).clearProps).toEqual('undefined');
-      expect(typeof (props as any).id).toEqual('undefined');
+      expect(typeof (props as any).__id).toEqual('undefined');
     });
 
   });

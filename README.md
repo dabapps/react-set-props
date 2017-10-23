@@ -10,10 +10,12 @@ npm install @dabapps/react-set-props --save --save-exact
 
 ## Usage
 
-### Connecting your component
+### TypeScript
+
+#### Connecting your component
 
 ```tsx
-import { withSetProps, SetPropsProps } from '@dabapps/react-set-props';
+import { withSetProps, SetPropsInterface } from '@dabapps/react-set-props';
 
 interface ExternalProps {
   buttonText: string;
@@ -23,7 +25,7 @@ interface Props {
   count: number;
 }
 
-const MyComponent = ({buttonText, count, setProps}: ExternalProps & SetPropsProps<Props>) => (
+const MyComponent = ({buttonText, count, setProps}: ExternalProps & SetPropsInterface<Props>) => (
   <p>
     Count: {count}
     <button onClick={() => setProps({count: count + 1})}>
@@ -39,12 +41,45 @@ const getInitialProps = (props: ExternalProps) => ({
 export default withSetProps<Props, ExternalProps>(getInitialProps)(MyComponent);
 ```
 
-### Props reducer
+#### Props reducer
 
 ```tsx
-import { propsReducer } from '@dabapps/react-set-props';
+import { setPropsReducer } from '@dabapps/react-set-props';
 
 combineReducers({
-  props: propsReducer
+  setPropsReducer
+});
+```
+
+### Javascript
+
+#### Connecting your component
+
+```js
+import { withSetProps } from '@dabapps/react-set-props';
+
+const MyComponent = ({buttonText, count, setProps}) => (
+  <p>
+    Count: {count}
+    <button onClick={() => setProps({count: count + 1})}>
+      {buttonText}
+    </button>
+  </p>
+);
+
+const getInitialProps = (props) => ({
+  count: 0
+});
+
+export default withSetProps(getInitialProps)(MyComponent);
+```
+
+#### Props reducer
+
+```js
+import { setPropsReducer } from '@dabapps/react-set-props';
+
+combineReducers({
+  setPropsReducer
 });
 ```

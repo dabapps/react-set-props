@@ -114,7 +114,7 @@ export function withSetProps<
 
     if (!props || props.__secretKey !== SET_PROPS_SECRET_KEY) {
       throw new Error(
-        'No props reducer found in store. Note: must be called "props".'
+        `No props reducer found in store. Note: must be called "${STORE_KEY}".`
       );
     }
 

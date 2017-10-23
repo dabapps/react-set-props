@@ -31,7 +31,7 @@ export interface SetPropsChildInterface<Props> extends DispatchProps {
   setProps(props: Partial<Props>): void;
 }
 
-export interface SetPropsParentInterface<Props> extends SetPropsChildInterface<Props>, DispatchProps {
+interface SetPropsParentInterface<Props> extends SetPropsChildInterface<Props>, DispatchProps {
   id: string;
 }
 
@@ -42,7 +42,7 @@ export interface SetPropsStoreInterface {
   };
 }
 
-export interface InternalSetPropsInterface<Props> {
+interface InternalSetPropsInterface<Props> {
   setProps(id: string, props: Partial<Props>): void;
   clearProps(id: string): void;
 }

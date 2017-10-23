@@ -27,14 +27,6 @@ export interface DispatchProps {
   dispatch(): Dispatch<any>;
 }
 
-export interface SetPropsChildInterface<Props> extends DispatchProps {
-  setProps(props: Partial<Props>): void;
-}
-
-interface SetPropsParentInterface<Props> extends SetPropsChildInterface<Props>, DispatchProps {
-  id: string;
-}
-
 export interface SetPropsStoreInterface {
   setPropsReducer: {
     __secretKey: string;
@@ -47,7 +39,9 @@ interface InternalSetPropsInterface<Props> {
   clearProps(id: string): void;
 }
 
-export type SetPropsInterface<Props> = SetPropsChildInterface<Props> & Props;
+export type SetPropsInterface<Props> = {
+  setProps(props: Partial<Props>): void;
+} & DispatchProps & Props;
 
 export function setPropsAction<Props>(id: string, props: Partial<Props>) {
   return {
@@ -103,14 +97,9 @@ export function withSetProps<
   ExternalProps extends StringKeyedObject = StringKeyedObject
 >(getInitialProps: (props: StringKeyedObject) => Props) {
 
-  type UnconnectedReturn = SetPropsChildInterface<Props> & ExternalProps & Props;
-  type ParentProps = SetPropsParentInterface<Props> & ExternalProps;
-
-  const unconnected = connect((state: SetPropsStoreInterface, parentProps: ParentProps): UnconnectedReturn => {
+  const unconnected = (id: string) =>
+    connect((state: SetPropsStoreInterface, parentProps: SetPropsInterface<Props>): SetPropsInterface<Props> => {
     const props = state[STORE_KEY];
-
-    // TODO: Remove casts when TS supports destructing extended types
-    const { id, ...remainingProps } = parentProps as any;
 
     if (!props || props.__secretKey !== SET_PROPS_SECRET_KEY) {
       throw new Error(
@@ -122,13 +111,12 @@ export function withSetProps<
 
     return {
       ...storeProps,
-      ...remainingProps
+      // TODO: Remove casts when TS supports destructing extended types
+      ...parentProps as any
     };
   });
 
   return (Component: Component<SetPropsInterface<Props> & ExternalProps>) => {
-    const Connected = unconnected(Component);
-
     return connect(
       (state, props: ExternalProps): ExternalProps => props,
       {
@@ -139,6 +127,7 @@ export function withSetProps<
     (
       class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & ExternalProps, void> {
         private id: string;
+        private Connected: Component<SetPropsInterface<Props>>;
 
         public constructor(
           inputProps: InternalSetPropsInterface<Props> & ExternalProps
@@ -146,6 +135,7 @@ export function withSetProps<
           super(inputProps);
 
           this.id = uuid();
+          this.Connected = unconnected(this.id)(Component);
           this.boundSetProps = this.boundSetProps.bind(this);
         }
 
@@ -164,13 +154,13 @@ export function withSetProps<
         }
 
         public render() {
+          const { Connected } = this;
           // TODO: Remove casts when TS supports destructing extended types
           const { setProps, clearProps, ...remainingProps } = this.props as any;
 
           return (
             <Connected
               {...remainingProps}
-              id={this.id}
               setProps={this.boundSetProps}
             />
           );

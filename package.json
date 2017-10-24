@@ -1,6 +1,6 @@
 {
   "name": "@dabapps/react-set-props",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Store arbitrary state in redux with a similar API to setState",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

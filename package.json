@@ -1,11 +1,11 @@
 {
   "name": "@dabapps/react-set-props",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Store arbitrary state in redux with a similar API to setState",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run dist",
+    "prepublish": "npm test && npm run dist",
     "dist": "rm -rf dist/ && mkdir -p dist/ && tsc --project src/tsconfig.json",
     "tests": "jest",
     "lint": "tslint --project tsconfig.json --type-check '{ts,tests,src}/**/*.{ts,tsx}'",

@@ -56,8 +56,11 @@ describe('Set Props', () => {
       expect(props.buttonText).toEqual('Increment');
       expect(typeof props.dispatch).toEqual('function');
       expect(typeof props.setProps).toEqual('function');
-      expect(typeof (props as any).clearProps).toEqual('undefined');
       expect(typeof (props as any).id).toEqual('undefined');
+      expect(typeof (props as any).clearProps).toEqual('undefined');
+      expect(typeof (props as any).__id).toEqual('undefined');
+      expect(typeof (props as any).__clearProps).toEqual('undefined');
+      expect(typeof (props as any).__setProps).toEqual('undefined');
     });
 
   });

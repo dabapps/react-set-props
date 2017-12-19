@@ -110,9 +110,9 @@ export function withSetProps<
     const storeProps = props[id];
 
     return {
-      ...storeProps,
       // TODO: Remove casts when TS supports destructing extended types
-      ...parentProps as any
+      ...parentProps as any,
+      ...storeProps,
     };
   });
 

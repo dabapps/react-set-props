@@ -7,7 +7,7 @@ const SET_PROPS = 'SET_PROPS';
 const CLEAR_PROPS = 'CLEAR_PROPS';
 const SET_PROPS_SECRET_KEY = 'SET_PROPS_SECRET_KEY';
 
-type Component<P> = React.ComponentClass<P> | React.StatelessComponent<P>;
+type ComponentType<P> = React.ComponentClass<P> | React.StatelessComponent<P>;
 
 export interface StringKeyedObject {
   [index: string]: any;
@@ -94,7 +94,7 @@ export function setPropsReducer(
 
 export function withSetProps<
   Props extends StringKeyedObject,
-  ExternalProps extends StringKeyedObject = StringKeyedObject
+  OwnProps extends StringKeyedObject = StringKeyedObject
 >(getInitialProps: (props: StringKeyedObject) => Props) {
 
   const unconnected = (id: string) =>
@@ -116,21 +116,21 @@ export function withSetProps<
     };
   });
 
-  return (Component: Component<SetPropsInterface<Props> & ExternalProps>) => {
+  return (Component: ComponentType<SetPropsInterface<Props> & OwnProps>) => {
     return connect(
-      (state, props: ExternalProps): ExternalProps => props,
+      (state, props: OwnProps): OwnProps => props,
       {
         __setProps: setPropsAction,
         __clearProps: clearPropsAction
       }
     )
     (
-      class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & ExternalProps, void> {
+      class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & OwnProps, void> {
         private __id: string; // tslint:disable-line:variable-name
-        private Connected: Component<SetPropsInterface<Props>>;
+        private Connected: ComponentType<SetPropsInterface<Props>>;
 
         public constructor(
-          inputProps: InternalSetPropsInterface<Props> & ExternalProps
+          inputProps: InternalSetPropsInterface<Props> & OwnProps
         ) {
           super(inputProps);
 

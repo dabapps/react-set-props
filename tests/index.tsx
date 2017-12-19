@@ -8,7 +8,7 @@ import {
   setPropsAction,
   SetPropsInterface,
   setPropsReducer,
-  withSetProps
+  withSetProps,
 } from '../src/';
 
 describe('Set Props', () => {
@@ -27,6 +27,7 @@ describe('Set Props', () => {
     return (
       <p>
         Count: {count}
+        {/* tslint:disable-next-line:jsx-no-lambda */}
         <button onClick={() => setProps({count: count + 1})}>
           {buttonText}
         </button>
@@ -35,7 +36,7 @@ describe('Set Props', () => {
   };
 
   const getInitialProps = () => ({
-    count: 0
+    count: 0,
   });
 
   const SetPropsCounter = withSetProps<Props, ExternalProps>(getInitialProps)(Counter);
@@ -84,8 +85,8 @@ describe('Set Props', () => {
 
       expect(testStore.getState()).toEqual({
         setPropsReducer: {
-          __secretKey: 'SET_PROPS_SECRET_KEY'
-        }
+          __secretKey: 'SET_PROPS_SECRET_KEY',
+        },
       });
 
       expect(Object.keys((testStore.getState() as any).setPropsReducer).length).toEqual(1);
@@ -115,8 +116,8 @@ describe('Set Props', () => {
 
       expect(testStore.getState()).toEqual({
         setPropsReducer: {
-          __secretKey: 'SET_PROPS_SECRET_KEY'
-        }
+          __secretKey: 'SET_PROPS_SECRET_KEY',
+        },
       });
 
       expect(Object.keys((testStore.getState() as any).setPropsReducer).length).toEqual(1);
@@ -133,8 +134,8 @@ describe('Set Props', () => {
 
       expect(testStore.getState()).toEqual({
         setPropsReducer: {
-          __secretKey: 'SET_PROPS_SECRET_KEY'
-        }
+          __secretKey: 'SET_PROPS_SECRET_KEY',
+        },
       });
 
       const props = (testStore.getState() as any).setPropsReducer;
@@ -165,7 +166,7 @@ describe('Set Props', () => {
       state = setPropsReducer(undefined, {type: 'Unknown'} as any);
 
       expect(state).toEqual({
-        __secretKey: 'SET_PROPS_SECRET_KEY'
+        __secretKey: 'SET_PROPS_SECRET_KEY',
       });
     });
 
@@ -175,8 +176,8 @@ describe('Set Props', () => {
       expect(state).toEqual({
         __secretKey: 'SET_PROPS_SECRET_KEY',
         id: {
-          foo: 'bar'
-        }
+          foo: 'bar',
+        },
       });
 
       state = setPropsReducer(state, setPropsAction('id2', {foo: 'bar'}));
@@ -184,11 +185,11 @@ describe('Set Props', () => {
       expect(state).toEqual({
         __secretKey: 'SET_PROPS_SECRET_KEY',
         id: {
-          foo: 'bar'
+          foo: 'bar',
         },
         id2: {
-          foo: 'bar'
-        }
+          foo: 'bar',
+        },
       });
     });
 
@@ -199,11 +200,11 @@ describe('Set Props', () => {
         __secretKey: 'SET_PROPS_SECRET_KEY',
         id: {
           foo: undefined,
-          baz: 'foo'
+          baz: 'foo',
         },
         id2: {
-          foo: 'bar'
-        }
+          foo: 'bar',
+        },
       });
     });
 
@@ -213,14 +214,14 @@ describe('Set Props', () => {
       expect(state).toEqual({
         __secretKey: 'SET_PROPS_SECRET_KEY',
         id2: {
-          foo: 'bar'
-        }
+          foo: 'bar',
+        },
       });
 
       state = setPropsReducer(state, clearPropsAction('id2'));
 
       expect(state).toEqual({
-        __secretKey: 'SET_PROPS_SECRET_KEY'
+        __secretKey: 'SET_PROPS_SECRET_KEY',
       });
     });
 

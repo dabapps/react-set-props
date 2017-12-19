@@ -57,7 +57,7 @@ export function clearPropsAction(id: string) {
   return {
     type: CLEAR_PROPS,
     payload: {
-      id
+      id,
     },
   };
 }
@@ -76,7 +76,7 @@ export function setPropsReducer(
           ...previous,
           ...action.payload.props,
         },
-        __secretKey: SET_PROPS_SECRET_KEY
+        __secretKey: SET_PROPS_SECRET_KEY,
       };
     case CLEAR_PROPS:
       const clearedState = {...state};
@@ -85,7 +85,7 @@ export function setPropsReducer(
 
       return {
         ...clearedState,
-        __secretKey: SET_PROPS_SECRET_KEY
+        __secretKey: SET_PROPS_SECRET_KEY,
       };
     default:
       return state;
@@ -121,7 +121,7 @@ export function withSetProps<
       (state, props: OwnProps): OwnProps => props,
       {
         __setProps: setPropsAction,
-        __clearProps: clearPropsAction
+        __clearProps: clearPropsAction,
       }
     )
     (

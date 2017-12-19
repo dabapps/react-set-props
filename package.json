@@ -1,6 +1,6 @@
 {
   "name": "@dabapps/react-set-props",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Store arbitrary state in redux with a similar API to setState",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
     "prepublish": "npm test && npm run dist",
     "dist": "rm -rf dist/ && mkdir -p dist/ && tsc --project src/tsconfig.json",
     "tests": "jest",
-    "lint": "tslint --project tsconfig.json --type-check '{ts,tests,src}/**/*.{ts,tsx}'",
+    "lint": "tslint --project tsconfig.json '{ts,tests,src}/**/*.{ts,tsx}'",
     "test": "npm run lint && npm run tests -- --coverage"
   },
   "repository": {
@@ -53,8 +53,8 @@
     "react-dom": "15.5.4",
     "react-test-renderer": "15.5.4",
     "ts-jest": "20.0.3",
-    "tslint": "5.1.0",
-    "tslint-config-dabapps": "github:dabapps/tslint-config-dabapps"
+    "tslint": "5.8.0",
+    "tslint-config-dabapps": "github:dabapps/tslint-config-dabapps#v0.4.0"
   },
   "peerDependencies": {
     "react": ">= 15",

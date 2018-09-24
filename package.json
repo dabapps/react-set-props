@@ -45,15 +45,15 @@
     "uuid": ">= 3"
   },
   "devDependencies": {
-    "@types/enzyme": "2.8.2",
-    "@types/jest": "19.2.2",
-    "@types/react-test-renderer": "15.4.5",
-    "enzyme": "2.8.2",
-    "jest": "20.0.3",
-    "react-dom": "15.5.4",
-    "react-test-renderer": "15.5.4",
-    "ts-jest": "20.0.3",
-    "tslint": "5.8.0",
+    "@types/enzyme": "^2.8.2",
+    "@types/jest": "^19.2.2",
+    "@types/react-test-renderer": "^15.4.5",
+    "enzyme": "^2.8.2",
+    "jest": "^20.0.3",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
+    "ts-jest": "^20.0.3",
+    "tslint": "^5.8.0",
     "tslint-config-dabapps": "github:dabapps/tslint-config-dabapps#v0.4.0"
   },
   "peerDependencies": {

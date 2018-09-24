@@ -35,14 +35,14 @@
   },
   "homepage": "https://github.com/dabapps/react-set-props#readme",
   "dependencies": {
-    "@types/react": "15.0.22",
-    "@types/react-redux": "4.4.38",
+    "@types/react": ">= 15",
+    "@types/react-redux": ">= 4",
     "@types/uuid": "3.4.3",
-    "react": "15.5.4",
-    "react-redux": "5.0.6",
-    "redux": "3.7.2",
-    "typescript": "2.3.3",
-    "uuid": "3.1.0"
+    "react": ">= 15",
+    "react-redux": ">= 5",
+    "redux": ">= 3",
+    "typescript": ">= 2.3.3",
+    "uuid": ">= 3"
   },
   "devDependencies": {
     "@types/enzyme": "2.8.2",

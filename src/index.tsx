@@ -125,7 +125,7 @@ export function withSetProps<
       }
     )
     (
-      class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & OwnProps, void> {
+      class SetPropsWrapper extends React.PureComponent<InternalSetPropsInterface<Props> & OwnProps, {}> {
         private __id: string; // tslint:disable-line:variable-name
         private Connected: ComponentType<SetPropsInterface<Props>>;
 

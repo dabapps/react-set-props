@@ -1,15 +1,15 @@
 {
   "name": "@dabapps/react-set-props",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Store arbitrary state in redux with a similar API to setState",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm test && npm run dist",
     "dist": "rm -rf dist/ && mkdir -p dist/ && tsc --project src/tsconfig.json",
     "tests": "jest",
     "lint": "tslint --project tsconfig.json '{ts,tests,src}/**/*.{ts,tsx}'",
-    "test": "npm run lint && npm run tests -- --coverage"
+    "test": "npm run lint && npm run tests -- --coverage --runInBand",
+    "prepublishOnly": "npm run dist"
   },
   "repository": {
     "type": "git",
@@ -35,33 +35,31 @@
   },
   "homepage": "https://github.com/dabapps/react-set-props#readme",
   "dependencies": {
-    "@types/react": "15.0.22",
-    "@types/react-redux": "4.4.38",
+    "@types/react": ">= 15",
+    "@types/react-redux": ">= 4",
     "@types/uuid": "3.4.3",
-    "react": "15.5.4",
-    "react-redux": "5.0.6",
-    "redux": "3.7.2",
-    "typescript": "2.3.3",
-    "uuid": "3.1.0"
-  },
-  "devDependencies": {
-    "@types/enzyme": "2.8.2",
-    "@types/jest": "19.2.2",
-    "@types/react-test-renderer": "15.4.5",
-    "enzyme": "2.8.2",
-    "jest": "20.0.3",
-    "react-dom": "15.5.4",
-    "react-test-renderer": "15.5.4",
-    "ts-jest": "20.0.3",
-    "tslint": "5.8.0",
-    "tslint-config-dabapps": "github:dabapps/tslint-config-dabapps#v0.4.0"
-  },
-  "peerDependencies": {
     "react": ">= 15",
     "react-redux": ">= 5",
     "redux": ">= 3",
     "typescript": ">= 2.3.3",
     "uuid": ">= 3"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^2.8.2",
+    "@types/jest": "^23.3.2",
+    "@types/react-test-renderer": "^15.4.5",
+    "enzyme": "^2.8.2",
+    "jest": "^23.6.0",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
+    "ts-jest": "^23.10.1",
+    "tslint": "^5.8.0",
+    "tslint-config-dabapps": "github:dabapps/tslint-config-dabapps#v0.4.0"
+  },
+  "peerDependencies": {
+    "react": ">= 15",
+    "react-redux": ">= 5",
+    "redux": ">= 3"
   },
   "publishConfig": {
     "access": "public"
@@ -76,7 +74,7 @@
       }
     },
     "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/tests/.*|\\.(test|spec))\\.(ts|tsx|js|jsx)$",
     "moduleFileExtensions": [
@@ -84,7 +82,6 @@
       "tsx",
       "js",
       "jsx"
-    ],
-    "mapCoverage": true
+    ]
   }
 }

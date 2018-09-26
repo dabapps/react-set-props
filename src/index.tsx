@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { v4 as uuid } from 'uuid';
 
 export const STORE_KEY = 'setPropsReducer';

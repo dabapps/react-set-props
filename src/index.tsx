@@ -137,7 +137,6 @@ export function withSetProps<
 
           this.__id = uuid();
           this.Connected = unconnected(this.__id)(Component);
-          this.boundSetProps = this.boundSetProps.bind(this);
         }
 
         public componentWillMount() {
@@ -162,12 +161,12 @@ export function withSetProps<
           return (
             <Connected
               {...remainingProps}
-              setProps={this.boundSetProps}
+              setProps={this.setProps}
             />
           );
         }
 
-        private boundSetProps(props: Partial<Props>) {
+        private setProps = (props: Partial<Props>) => {
           this.props.__setProps(this.__id, props);
         }
       }

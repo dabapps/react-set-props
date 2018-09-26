@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { v4 as uuid } from 'uuid';
 
 export const STORE_KEY = 'setPropsReducer';
@@ -136,7 +137,6 @@ export function withSetProps<
 
           this.__id = uuid();
           this.Connected = unconnected(this.__id)(Component);
-          this.boundSetProps = this.boundSetProps.bind(this);
         }
 
         public componentWillMount() {
@@ -161,12 +161,12 @@ export function withSetProps<
           return (
             <Connected
               {...remainingProps}
-              setProps={this.boundSetProps}
+              setProps={this.setProps}
             />
           );
         }
 
-        private boundSetProps(props: Partial<Props>) {
+        private setProps = (props: Partial<Props>) => {
           this.props.__setProps(this.__id, props);
         }
       }

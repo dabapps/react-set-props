@@ -95,8 +95,8 @@ export function setPropsReducer(
 
 export function withSetProps<
   Props extends StringKeyedObject,
-  OwnProps extends StringKeyedObject = StringKeyedObject
->(getInitialProps: (props: StringKeyedObject) => Props) {
+  OwnProps extends StringKeyedObject = {}
+>(getInitialProps: (props: OwnProps) => Props) {
 
   const unconnected = (id: string) =>
     connect((state: SetPropsStoreInterface, parentProps: SetPropsInterface<Props>): SetPropsInterface<Props> => {
